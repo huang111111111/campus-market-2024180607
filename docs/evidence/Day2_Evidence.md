@@ -18,7 +18,7 @@ DetailView.vue 商品详情页
 /list 商品列表
 /publish 发布商品
 /message 消息页面
-/profile 个人中心
+/profile 个git add .人中心
 /board 数据看板
 /detail 商品详情
 3. 遇到的问题

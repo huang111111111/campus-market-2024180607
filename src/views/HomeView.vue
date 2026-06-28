@@ -17,42 +17,4 @@
         <p>宿舍收纳、服饰、运动器材</p>
       </div>
     </div>
-  </div>
-</template>
-
-<script setup lang="ts">
-</script>
-
-<style scoped>
-.home-box {
-  max-width: 1000px;
-  margin: 0 auto;
-}
-h1 {
-  color: #222;
-}
-.desc {
-  font-size: 18px;
-  color: #666;
-  margin-bottom: 30px;
-}
-.card-list {
-  display: flex;
-  gap: 20px;
-}
-.card {
-  flex: 1;
-  padding: 24px;
-  background: #f5f7fa;
-  border-radius: 12px;
-  transition: all 0.3s ease;
-}
-.card:hover {
-  background: #e8f0fe;
-  transform: translateY(-4px);
-}
-.card h3 {
-  color: #1967d2;
-  margin-top: 0;
-}
-</style>
+  </digit push -u origin master
