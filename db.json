@@ -1,0 +1,323 @@
+{
+  "trades": [
+    {
+      "id": 1,
+      "title": "九成新 Cherry 机械键盘",
+      "category": "数码配件",
+      "price": 89,
+      "condition": "九成新",
+      "location": "东区 3 号楼",
+      "publisher": "软件工程 2023 级 李明",
+      "publishTime": "2026-06-20 10:20",
+      "image": "",
+      "status": "open",
+      "description": "键盘使用半年，轴体正常，因升级设备转让，送拔键器。"
+    },
+    {
+      "id": 2,
+      "title": "《高等数学（第七版）》上下册",
+      "category": "教材资料",
+      "price": 18,
+      "condition": "八成新",
+      "location": "图书馆门口",
+      "publisher": "数学学院 2023 级 王芳",
+      "publishTime": "2026-06-21 14:30",
+      "image": "",
+      "status": "open",
+      "description": "上册有少量笔记，下册几乎全新，两本一起出。"
+    },
+    {
+      "id": 3,
+      "title": "折叠床上桌 带散热风扇",
+      "category": "宿舍生活",
+      "price": 35,
+      "condition": "七成新",
+      "location": "西区 5 栋",
+      "publisher": "计算机学院 2024 级 张伟",
+      "publishTime": "2026-06-22 09:15",
+      "image": "",
+      "status": "open",
+      "description": "宿舍学习神器，可折叠收纳，桌面有轻微划痕不影响使用。"
+    },
+    {
+      "id": 4,
+      "title": "公路自行车 捷安特 Escape 2",
+      "category": "运动出行",
+      "price": 650,
+      "condition": "九成新",
+      "location": "北区车棚",
+      "publisher": "机械工程 2022 级 陈浩",
+      "publishTime": "2026-06-22 16:45",
+      "image": "",
+      "status": "open",
+      "description": "去年入手，骑了不到 500 公里，因毕业转让，送车锁和头盔。"
+    },
+    {
+      "id": 5,
+      "title": "二手 iPad Air 5 64G",
+      "category": "数码配件",
+      "price": 2100,
+      "condition": "九五新",
+      "location": "东区 2 号楼",
+      "publisher": "电子信息 2023 级 赵雪",
+      "publishTime": "2026-06-23 11:00",
+      "image": "",
+      "status": "open",
+      "description": "买来主要用于看网课和笔记，屏幕完好，电池健康 95%，带原装充电器。"
+    },
+    {
+      "id": 6,
+      "title": "宿舍用小功率电煮锅",
+      "category": "宿舍生活",
+      "price": 25,
+      "condition": "八成新",
+      "location": "南苑 6 栋",
+      "publisher": "食品科学 2024 级 刘洋",
+      "publishTime": "2026-06-23 19:30",
+      "image": "",
+      "status": "open",
+      "description": "600W 小功率，宿舍可用，煮面煮粥很方便，毕业出。"
+    },
+    {
+      "id": 7,
+      "title": "考研英语真题 + 网课资料",
+      "category": "教材资料",
+      "price": 30,
+      "condition": "七成新",
+      "location": "自习室 3 楼",
+      "publisher": "经管学院 2022 级 孙悦",
+      "publishTime": "2026-06-24 08:50",
+      "image": "",
+      "status": "open",
+      "description": "包含近 10 年真题和笔记，还有网课百度云资料打包送。"
+    }
+  ],
+  "lostFounds": [
+    {
+      "id": 1,
+      "title": "寻找黑色校园卡",
+      "type": "lost",
+      "itemName": "校园卡",
+      "location": "一食堂二楼",
+      "eventTime": "2026-06-22 12:10",
+      "contact": "QQ：1234567890",
+      "status": "open",
+      "description": "黑色卡套，内有校园卡和学生证，名字：张晓明。拾到请联系，非常感谢！"
+    },
+    {
+      "id": 2,
+      "title": "拾到蓝色折叠伞一把",
+      "type": "found",
+      "itemName": "雨伞",
+      "location": "教学楼 A 区 101 教室",
+      "eventTime": "2026-06-22 18:40",
+      "contact": "站内私信联系",
+      "status": "open",
+      "description": "蓝色折叠伞，放在 A 区一楼值班室，请失主看到后前往认领。"
+    },
+    {
+      "id": 3,
+      "title": "丢失 AirPods Pro 耳机仓",
+      "type": "lost",
+      "itemName": "蓝牙耳机仓",
+      "location": "图书馆 2 楼阅览室",
+      "eventTime": "2026-06-23 15:30",
+      "contact": "微信：lost_finder_2024",
+      "status": "open",
+      "description": "白色 AirPods Pro 充电仓（不含耳机），外壳有轻微划痕，刻有名字缩写「LK」。"
+    },
+    {
+      "id": 4,
+      "title": "拾到一串钥匙",
+      "type": "found",
+      "itemName": "钥匙串",
+      "location": "操场跑道旁长椅",
+      "eventTime": "2026-06-24 07:20",
+      "contact": "手机：138****5678",
+      "status": "open",
+      "description": "共 4 把钥匙 + 1 个小挂件（皮卡丘），暂放在操场入口保安亭。"
+    },
+    {
+      "id": 5,
+      "title": "丢失灰色双肩包",
+      "type": "lost",
+      "itemName": "双肩包",
+      "location": "二食堂一楼",
+      "eventTime": "2026-06-24 12:00",
+      "contact": "站内私信联系",
+      "status": "open",
+      "description": "灰色 Swissgear 双肩包，包内有笔记本和几本专业书。吃饭时放在座位旁忘记拿走。"
+    },
+    {
+      "id": 6,
+      "title": "拾到校园卡（李同学）",
+      "type": "found",
+      "itemName": "校园卡",
+      "location": "图书馆自助借还机旁",
+      "eventTime": "2026-06-25 10:15",
+      "contact": "到图书馆 1 楼服务台领取",
+      "status": "open",
+      "description": "校园卡显示姓名「李思远」，学号 2023****12。已交到图书馆一楼服务台。"
+    }
+  ],
+  "groupBuys": [
+    {
+      "id": 1,
+      "title": "周五晚南门火锅 AA 拼单",
+      "type": "拼餐",
+      "targetCount": 6,
+      "currentCount": 3,
+      "deadline": "2026-06-27 17:00",
+      "location": "学校南门集合",
+      "publisher": "计算机学院 2023 级 周杰",
+      "status": "open",
+      "description": "人均预算 60-80 元，已有 3 人（2 男 1 女），再找 3 位，男女不限。确定后统一预约。"
+    },
+    {
+      "id": 2,
+      "title": "四六级真题资料团购",
+      "type": "学习资料",
+      "targetCount": 10,
+      "currentCount": 7,
+      "deadline": "2026-06-28 22:00",
+      "location": "线上确认",
+      "publisher": "外国语学院 2024 级 吴雨",
+      "status": "open",
+      "description": "拼团购买最新四六级真题精讲，10 人团每人 25 元（原价 45）。拉群统一发放。"
+    },
+    {
+      "id": 3,
+      "title": "周末羽毛球双打搭子",
+      "type": "运动搭子",
+      "targetCount": 4,
+      "currentCount": 2,
+      "deadline": "2026-06-28 12:00",
+      "location": "校内体育馆",
+      "publisher": "机械工程 2023 级 黄磊",
+      "status": "open",
+      "description": "周末下午 2 点打球，现有 2 人，再找 2 人双打。水平业余但求开心，球 AA。"
+    },
+    {
+      "id": 4,
+      "title": "前端学习小组 互助打卡",
+      "type": "学习搭子",
+      "targetCount": 5,
+      "currentCount": 3,
+      "deadline": "2026-06-30 20:00",
+      "location": "线上 + 自习室",
+      "publisher": "软件工程 2024 级 郑小北",
+      "status": "open",
+      "description": "组一个 Vue/React 学习小组，每天在群里打卡进度，周末一起去自习室。已有 3 人（都是大二）。"
+    },
+    {
+      "id": 5,
+      "title": "拼车去火车站（周五下午）",
+      "type": "出行拼车",
+      "targetCount": 4,
+      "currentCount": 2,
+      "deadline": "2026-06-27 14:00",
+      "location": "校门口出发",
+      "publisher": "土木工程 2023 级 马超",
+      "status": "open",
+      "description": "周五下午 3 点出发去火车站，滴滴拼车，现有 2 人再找 2 人，人均约 15 元。"
+    },
+    {
+      "id": 6,
+      "title": "考研数学资料合购",
+      "type": "学习资料",
+      "targetCount": 8,
+      "currentCount": 5,
+      "deadline": "2026-07-02 18:00",
+      "location": "线上确认",
+      "publisher": "数学学院 2023 级 陈数",
+      "status": "open",
+      "description": "合购李永乐复习全书 + 张宇 1000 题，8 人团人均优惠价 55 元，已有 5 人。"
+    }
+  ],
+  "errands": [
+    {
+      "id": 1,
+      "title": "帮取快递到西区 5 栋楼下",
+      "taskType": "取快递",
+      "reward": 3,
+      "from": "菜鸟驿站",
+      "to": "西区 5 栋楼下",
+      "deadline": "2026-06-26 19:00",
+      "publisher": "西区 5 栋 赵同学",
+      "status": "open",
+      "description": "一个小包裹，不重。送到楼下快递架即可，到了发消息。"
+    },
+    {
+      "id": 2,
+      "title": "帮忙带一份晚餐",
+      "taskType": "代买",
+      "reward": 5,
+      "from": "二食堂一楼",
+      "to": "实验楼 302 实验室",
+      "deadline": "2026-06-26 18:30",
+      "publisher": "实验室 孙同学",
+      "status": "open",
+      "description": "二食堂黄焖鸡米饭一份（中辣），带一瓶冰矿泉水。到实验室门口打电话。"
+    },
+    {
+      "id": 3,
+      "title": "代还图书馆借书",
+      "taskType": "代办事",
+      "reward": 4,
+      "from": "西区 7 栋",
+      "to": "图书馆还书处",
+      "deadline": "2026-06-27 17:00",
+      "publisher": "西区 7 栋 杨同学",
+      "status": "open",
+      "description": "共 3 本书，在 7 栋楼下交给你，帮忙还到图书馆。不用排队很久，正常还书即可。"
+    },
+    {
+      "id": 4,
+      "title": "代取校医院体检报告",
+      "taskType": "代办事",
+      "reward": 6,
+      "from": "校医院 2 楼体检中心",
+      "to": "北区 3 号楼",
+      "deadline": "2026-06-27 11:00",
+      "publisher": "北区 3 号楼 钱同学",
+      "status": "open",
+      "description": "体检报告已出，凭学生证代取。需要上午去，下午医院体检中心不上班。送到北区 3 号楼快递柜。"
+    },
+    {
+      "id": 5,
+      "title": "帮忙寄一个快递",
+      "taskType": "代办事",
+      "reward": 4,
+      "from": "东区 1 号楼",
+      "to": "校内顺丰快递点",
+      "deadline": "2026-06-26 16:00",
+      "publisher": "东区 1 号楼 周同学",
+      "status": "open",
+      "description": "一个小盒子已经打包好，只需帮忙送到快递点寄出（邮费已线上付过）。"
+    },
+    {
+      "id": 6,
+      "title": "代买文印店打印资料",
+      "taskType": "代买",
+      "reward": 4,
+      "from": "校内文印店",
+      "to": "自习室 3 楼 305",
+      "deadline": "2026-06-26 20:00",
+      "publisher": "自习室 吴同学",
+      "status": "open",
+      "description": "帮忙打印一份 PDF（约 30 页，双面打印），送到自习室 305 座位。加微信发文件。"
+    },
+    {
+      "id": 7,
+      "title": "帮忙搬运宿舍行李下楼",
+      "taskType": "搬运",
+      "reward": 10,
+      "from": "西区 3 栋 6 楼",
+      "to": "西区 3 栋楼下快递点",
+      "deadline": "2026-06-28 15:00",
+      "publisher": "西区 3 栋 林同学",
+      "status": "open",
+      "description": "毕业寄行李，一个大纸箱约 15kg，从 6 楼搬到楼下快递点（无电梯）。需要男生帮忙。"
+    }
+  ]
+}

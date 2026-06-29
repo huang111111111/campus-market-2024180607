@@ -1,5 +1,4 @@
 <template>
-  <h1 style="color:red;font-size:40px;">测试文字</h1>
   <div class="home-box">
     <h1>校园集市首页</h1>
     <p class="desc">闲置物品交换、二手好物交易平台</p>
@@ -17,4 +16,51 @@
         <p>宿舍收纳、服饰、运动器材</p>
       </div>
     </div>
-  </digit push -u origin master
+  </div>
+</template>
+
+<script setup lang="ts">
+</script>
+
+<style scoped>
+.home-box {
+  text-align: center;
+  padding: 48px 24px;
+}
+
+.home-box h1 {
+  font-size: 28px;
+  margin-bottom: 12px;
+}
+
+.desc {
+  color: #6b7280;
+  font-size: 16px;
+  margin-bottom: 32px;
+}
+
+.card-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.card {
+  padding: 24px;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+}
+
+.card h3 {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+
+.card p {
+  color: #6b7280;
+  font-size: 14px;
+}
+</style>
