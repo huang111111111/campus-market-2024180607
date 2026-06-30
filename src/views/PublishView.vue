@@ -2,7 +2,7 @@
   <section class="page">
     <div class="page-header">
       <h1>发布信息</h1>
-      <p>选择信息类型，填写详情，即可发布到校园轻集市。</p>
+      <p>选择发布类型，填写必要信息，让校园需求更快被看见。</p>
     </div>
 
     <!-- 类型选择 -->
@@ -11,25 +11,34 @@
         v-for="tab in tabs"
         :key="tab.key"
         class="type-tab"
-        :class="{ active: activeType === tab.key }"
-        @click="activeType = tab.key"
+        :class="{ active: publishType === tab.key }"
+        @click="publishType = tab.key"
       >
         <span class="tab-icon">{{ tab.icon }}</span>
         <span class="tab-label">{{ tab.label }}</span>
       </button>
     </div>
 
-    <!-- 二手交易表单 -->
-    <form v-if="activeType === 'trade'" class="publish-form" @submit.prevent="handleSubmit">
-      <div class="form-row">
-        <div class="form-group">
-          <label>商品标题</label>
-          <input v-model="form.trade.title" placeholder="例如：九成新机械键盘" />
-        </div>
-        <div class="form-group narrow">
-          <label>分类</label>
-          <select v-model="form.trade.category">
-            <option value="">请选择</option>
+    <!-- 发布表单 -->
+    <form class="publish-form" @submit.prevent="handleSubmit">
+      <!-- 通用字段 -->
+      <FormField label="标题" required :error="errors.title">
+        <input v-model.trim="form.title" type="text" placeholder="请输入标题" />
+      </FormField>
+
+      <FormField label="地点" required :error="errors.location">
+        <input v-model.trim="form.location" type="text" placeholder="请输入地点" />
+      </FormField>
+
+      <FormField label="描述" required :error="errors.description">
+        <textarea v-model.trim="form.description" rows="5" placeholder="请简要描述具体情况"></textarea>
+      </FormField>
+
+      <!-- 二手交易专属字段 -->
+      <template v-if="publishType === 'trade'">
+        <FormField label="商品分类" required :error="errors.category">
+          <select v-model="form.category">
+            <option value="">请选择分类</option>
             <option>数码配件</option>
             <option>教材资料</option>
             <option>宿舍生活</option>
@@ -37,88 +46,52 @@
             <option>服饰美妆</option>
             <option>其他</option>
           </select>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group narrow">
-          <label>价格 (元)</label>
-          <input v-model.number="form.trade.price" type="number" placeholder="0" />
-        </div>
-        <div class="form-group narrow">
-          <label>成色</label>
-          <select v-model="form.trade.condition">
-            <option value="">请选择</option>
+        </FormField>
+
+        <FormField label="价格" required :error="errors.price">
+          <input v-model.number="form.price" type="number" min="0" placeholder="请输入价格" />
+        </FormField>
+
+        <FormField label="成色" required :error="errors.condition">
+          <select v-model="form.condition">
+            <option value="">请选择成色</option>
             <option>全新</option>
             <option>九五新</option>
             <option>九成新</option>
             <option>八成新</option>
             <option>七成新</option>
+            <option>正常使用痕迹</option>
           </select>
-        </div>
-        <div class="form-group">
-          <label>交易地点</label>
-          <input v-model="form.trade.location" placeholder="例如：东区 3 号楼" />
-        </div>
-      </div>
-      <div class="form-group">
-        <label>商品描述</label>
-        <textarea v-model="form.trade.description" rows="3" placeholder="描述一下商品的使用情况、出售原因……" />
-      </div>
-      <button type="submit" class="submit-btn">发布二手信息</button>
-    </form>
+        </FormField>
+      </template>
 
-    <!-- 失物招领表单 -->
-    <form v-if="activeType === 'lostFound'" class="publish-form" @submit.prevent="handleSubmit">
-      <div class="form-row">
-        <div class="form-group narrow">
-          <label>类型</label>
-          <select v-model="form.lostFound.type">
-            <option value="">请选择</option>
-            <option value="lost">寻物启事</option>
-            <option value="found">失物招领</option>
+      <!-- 失物招领专属字段 -->
+      <template v-if="publishType === 'lostFound'">
+        <FormField label="信息类型" required>
+          <select v-model="form.lostFoundType">
+            <option value="lost">寻物</option>
+            <option value="found">招领</option>
           </select>
-        </div>
-        <div class="form-group">
-          <label>物品名称</label>
-          <input v-model="form.lostFound.itemName" placeholder="例如：校园卡、雨伞" />
-        </div>
-      </div>
-      <div class="form-group">
-        <label>标题</label>
-        <input v-model="form.lostFound.title" placeholder="例如：寻找黑色校园卡" />
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>地点</label>
-          <input v-model="form.lostFound.location" placeholder="例如：一食堂二楼" />
-        </div>
-        <div class="form-group narrow">
-          <label>时间</label>
-          <input v-model="form.lostFound.eventTime" type="datetime-local" />
-        </div>
-      </div>
-      <div class="form-group">
-        <label>联系方式</label>
-        <input v-model="form.lostFound.contact" placeholder="QQ / 微信 / 手机号" />
-      </div>
-      <div class="form-group">
-        <label>详细描述</label>
-        <textarea v-model="form.lostFound.description" rows="3" placeholder="描述物品特征、丢失/拾到经过……" />
-      </div>
-      <button type="submit" class="submit-btn">发布招领信息</button>
-    </form>
+        </FormField>
 
-    <!-- 拼单搭子表单 -->
-    <form v-if="activeType === 'groupBuy'" class="publish-form" @submit.prevent="handleSubmit">
-      <div class="form-row">
-        <div class="form-group">
-          <label>拼单标题</label>
-          <input v-model="form.groupBuy.title" placeholder="例如：周五晚南门火锅 AA 拼单" />
-        </div>
-        <div class="form-group narrow">
-          <label>类型</label>
-          <select v-model="form.groupBuy.type">
-            <option value="">请选择</option>
+        <FormField label="物品名称" required :error="errors.itemName">
+          <input v-model.trim="form.itemName" type="text" placeholder="请输入物品名称" />
+        </FormField>
+
+        <FormField label="发生时间" required :error="errors.eventTime">
+          <input v-model="form.eventTime" type="datetime-local" />
+        </FormField>
+
+        <FormField label="联系方式">
+          <input v-model.trim="form.contact" type="text" placeholder="QQ / 微信 / 手机号（选填）" />
+        </FormField>
+      </template>
+
+      <!-- 拼单搭子专属字段 -->
+      <template v-if="publishType === 'groupBuy'">
+        <FormField label="拼单类型" required :error="errors.groupType">
+          <select v-model="form.groupType">
+            <option value="">请选择类型</option>
             <option>拼餐</option>
             <option>学习资料</option>
             <option>运动搭子</option>
@@ -126,81 +99,72 @@
             <option>出行拼车</option>
             <option>其他</option>
           </select>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group narrow">
-          <label>目标人数</label>
-          <input v-model.number="form.groupBuy.targetCount" type="number" min="2" placeholder="6" />
-        </div>
-        <div class="form-group">
-          <label>活动地点</label>
-          <input v-model="form.groupBuy.location" placeholder="例如：学校南门" />
-        </div>
-        <div class="form-group narrow">
-          <label>截止时间</label>
-          <input v-model="form.groupBuy.deadline" type="datetime-local" />
-        </div>
-      </div>
-      <div class="form-group">
-        <label>详细描述</label>
-        <textarea v-model="form.groupBuy.description" rows="3" placeholder="描述拼单详情、费用分摊方式……" />
-      </div>
-      <button type="submit" class="submit-btn">发布拼单信息</button>
-    </form>
+        </FormField>
 
-    <!-- 跑腿委托表单 -->
-    <form v-if="activeType === 'errand'" class="publish-form" @submit.prevent="handleSubmit">
-      <div class="form-row">
-        <div class="form-group">
-          <label>任务标题</label>
-          <input v-model="form.errand.title" placeholder="例如：帮取快递到宿舍楼下" />
-        </div>
-        <div class="form-group narrow">
-          <label>任务类型</label>
-          <select v-model="form.errand.taskType">
-            <option value="">请选择</option>
+        <FormField label="目标人数" required :error="errors.targetCount">
+          <input v-model.number="form.targetCount" type="number" min="2" placeholder="请输入目标人数" />
+        </FormField>
+
+        <FormField label="截止时间" required :error="errors.deadline">
+          <input v-model="form.deadline" type="datetime-local" />
+        </FormField>
+      </template>
+
+      <!-- 跑腿委托专属字段 -->
+      <template v-if="publishType === 'errand'">
+        <FormField label="任务类型" required :error="errors.taskType">
+          <select v-model="form.taskType">
+            <option value="">请选择任务类型</option>
             <option>取快递</option>
             <option>代买</option>
             <option>代办事</option>
             <option>搬运</option>
             <option>其他</option>
           </select>
-        </div>
+        </FormField>
+
+        <FormField label="酬劳" required :error="errors.reward">
+          <input v-model.number="form.reward" type="number" min="0" placeholder="请输入酬劳" />
+        </FormField>
+
+        <FormField label="取件地点" required :error="errors.from">
+          <input v-model.trim="form.from" type="text" placeholder="请输入取件地点" />
+        </FormField>
+
+        <FormField label="送达地点" required :error="errors.to">
+          <input v-model.trim="form.to" type="text" placeholder="请输入送达地点" />
+        </FormField>
+
+        <FormField label="截止时间" required :error="errors.deadline">
+          <input v-model="form.deadline" type="datetime-local" />
+        </FormField>
+      </template>
+
+      <div class="actions">
+        <button type="button" class="secondary" @click="resetForm">重置</button>
+        <button type="submit" class="primary" :disabled="submitting">
+          {{ submitting ? '提交中...' : '发布' }}
+        </button>
       </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>取件/出发地</label>
-          <input v-model="form.errand.from" placeholder="例如：菜鸟驿站" />
-        </div>
-        <div class="form-group">
-          <label>送达/目的地</label>
-          <input v-model="form.errand.to" placeholder="例如：西区 5 栋楼下" />
-        </div>
-        <div class="form-group narrow">
-          <label>酬劳 (元)</label>
-          <input v-model.number="form.errand.reward" type="number" min="1" placeholder="5" />
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group narrow">
-          <label>截止时间</label>
-          <input v-model="form.errand.deadline" type="datetime-local" />
-        </div>
-      </div>
-      <div class="form-group">
-        <label>任务描述</label>
-        <textarea v-model="form.errand.description" rows="3" placeholder="描述具体要求、注意事项……" />
-      </div>
-      <button type="submit" class="submit-btn">发布跑腿任务</button>
     </form>
   </section>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 
-const activeType = ref<'trade' | 'lostFound' | 'groupBuy' | 'errand'>('trade')
+import FormField from '../components/FormField.vue'
+import { createTrade } from '../api/trade'
+import { createLostFound } from '../api/lostFound'
+import { createGroupBuy } from '../api/groupBuy'
+import { createErrand } from '../api/errand'
+
+type PublishType = 'trade' | 'lostFound' | 'groupBuy' | 'errand'
+
+const router = useRouter()
+const publishType = ref<PublishType>('trade')
+const submitting = ref(false)
 
 const tabs = [
   { key: 'trade' as const, label: '二手交易', icon: '📦' },
@@ -210,44 +174,219 @@ const tabs = [
 ]
 
 const form = reactive({
-  trade: {
-    title: '',
-    category: '',
-    price: 0,
-    condition: '',
-    location: '',
-    description: '',
-  },
-  lostFound: {
-    title: '',
-    type: '' as 'lost' | 'found' | '',
-    itemName: '',
-    location: '',
-    eventTime: '',
-    contact: '',
-    description: '',
-  },
-  groupBuy: {
-    title: '',
-    type: '',
-    targetCount: 2,
-    location: '',
-    deadline: '',
-    description: '',
-  },
-  errand: {
-    title: '',
-    taskType: '',
-    from: '',
-    to: '',
-    reward: 1,
-    deadline: '',
-    description: '',
-  },
+  title: '',
+  location: '',
+  description: '',
+  // 二手交易
+  category: '',
+  price: 0,
+  condition: '',
+  // 失物招领
+  lostFoundType: 'lost' as string,
+  itemName: '',
+  eventTime: '',
+  contact: '',
+  // 拼单搭子
+  groupType: '',
+  targetCount: 2,
+  deadline: '',
+  // 跑腿委托
+  taskType: '',
+  reward: 0,
+  from: '',
+  to: '',
 })
 
-function handleSubmit() {
-  alert('发布成功！（功能将在 Day4 接入后端 API）')
+const errors = reactive<Record<string, string>>({})
+
+// 切换发布类型时重置表单和错误
+watch(publishType, () => {
+  resetForm()
+})
+
+function clearErrors() {
+  Object.keys(errors).forEach((key) => {
+    errors[key] = ''
+  })
+}
+
+function validateForm(): boolean {
+  clearErrors()
+
+  if (!form.title) {
+    errors.title = '请输入标题'
+  }
+
+  if (!form.location) {
+    errors.location = '请输入地点'
+  }
+
+  if (!form.description) {
+    errors.description = '请输入描述'
+  }
+
+  if (publishType.value === 'trade') {
+    if (!form.category) {
+      errors.category = '请输入商品分类'
+    }
+    if (form.price <= 0) {
+      errors.price = '价格应大于 0'
+    }
+    if (!form.condition) {
+      errors.condition = '请选择商品成色'
+    }
+  }
+
+  if (publishType.value === 'lostFound') {
+    if (!form.itemName) {
+      errors.itemName = '请输入物品名称'
+    }
+    if (!form.eventTime) {
+      errors.eventTime = '请选择发生时间'
+    }
+  }
+
+  if (publishType.value === 'groupBuy') {
+    if (!form.groupType) {
+      errors.groupType = '请选择拼单类型'
+    }
+    if (form.targetCount < 2) {
+      errors.targetCount = '目标人数不能少于 2 人'
+    }
+    if (!form.deadline) {
+      errors.deadline = '请选择截止时间'
+    }
+  }
+
+  if (publishType.value === 'errand') {
+    if (!form.taskType) {
+      errors.taskType = '请选择任务类型'
+    }
+    if (form.reward < 0) {
+      errors.reward = '酬劳不能为负数'
+    }
+    if (!form.from) {
+      errors.from = '请输入取件地点'
+    }
+    if (!form.to) {
+      errors.to = '请输入送达地点'
+    }
+    if (!form.deadline) {
+      errors.deadline = '请选择截止时间'
+    }
+  }
+
+  return Object.values(errors).every((message) => !message)
+}
+
+function getCurrentTime(): string {
+  const now = new Date()
+  return now.toISOString().slice(0, 16).replace('T', ' ')
+}
+
+async function handleSubmit() {
+  if (!validateForm()) {
+    return
+  }
+
+  submitting.value = true
+
+  try {
+    if (publishType.value === 'trade') {
+      await createTrade({
+        title: form.title,
+        category: form.category,
+        price: form.price,
+        condition: form.condition,
+        location: form.location,
+        publisher: '当前用户',
+        publishTime: getCurrentTime(),
+        image: '',
+        status: 'open',
+        description: form.description,
+      })
+
+      window.alert('二手商品发布成功！')
+      router.push('/trade')
+    }
+
+    if (publishType.value === 'lostFound') {
+      await createLostFound({
+        title: form.title,
+        type: form.lostFoundType as 'lost' | 'found',
+        itemName: form.itemName,
+        location: form.location,
+        eventTime: form.eventTime,
+        contact: form.contact || '站内消息联系',
+        status: 'open',
+        description: form.description,
+      })
+
+      window.alert('失物招领信息发布成功！')
+      router.push('/lost-found')
+    }
+
+    if (publishType.value === 'groupBuy') {
+      await createGroupBuy({
+        title: form.title,
+        type: form.groupType,
+        targetCount: form.targetCount,
+        currentCount: 1,
+        deadline: form.deadline,
+        location: form.location,
+        publisher: '当前用户',
+        status: 'open',
+        description: form.description,
+      })
+
+      window.alert('拼单搭子信息发布成功！')
+      router.push('/group-buy')
+    }
+
+    if (publishType.value === 'errand') {
+      await createErrand({
+        title: form.title,
+        taskType: form.taskType,
+        reward: form.reward,
+        from: form.from,
+        to: form.to,
+        deadline: form.deadline,
+        publisher: '当前用户',
+        status: 'open',
+        description: form.description,
+      })
+
+      window.alert('跑腿委托发布成功！')
+      router.push('/errand')
+    }
+  } catch (error) {
+    console.error('发布失败:', error)
+    window.alert('发布失败，请检查 Mock 服务是否正常运行')
+  } finally {
+    submitting.value = false
+  }
+}
+
+function resetForm() {
+  form.title = ''
+  form.location = ''
+  form.description = ''
+  form.category = ''
+  form.price = 0
+  form.condition = ''
+  form.lostFoundType = 'lost'
+  form.itemName = ''
+  form.eventTime = ''
+  form.contact = ''
+  form.groupType = ''
+  form.targetCount = 2
+  form.deadline = ''
+  form.taskType = ''
+  form.reward = 0
+  form.from = ''
+  form.to = ''
+
+  clearErrors()
 }
 </script>
 
@@ -318,43 +457,21 @@ function handleSubmit() {
 
 /* 表单 */
 .publish-form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  display: grid;
+  gap: 18px;
   padding: 24px;
   border-radius: 16px;
   background: #fff;
-  border: 1px solid #e5e7eb;
 }
 
-.form-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.form-group.narrow {
-  max-width: 200px;
-}
-
-.form-group label {
-  font-size: 13px;
-  font-weight: 600;
-  color: #374151;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-  padding: 10px 12px;
+input,
+select,
+textarea {
+  width: 100%;
+  box-sizing: border-box;
   border: 1px solid #d1d5db;
   border-radius: 8px;
+  padding: 10px 12px;
   font-size: 14px;
   font-family: inherit;
   color: #1f2937;
@@ -362,34 +479,56 @@ function handleSubmit() {
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
+input:focus,
+select:focus,
+textarea:focus {
   outline: none;
   border-color: #2563eb;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
   background: #fff;
 }
 
-.form-group textarea {
+textarea {
   resize: vertical;
 }
 
-.submit-btn {
-  align-self: flex-start;
-  padding: 12px 32px;
-  background: #2563eb;
-  color: #fff;
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+button {
   border: none;
-  border-radius: 10px;
-  font-size: 15px;
-  font-weight: 600;
-  font-family: inherit;
+  border-radius: 8px;
+  padding: 10px 18px;
   cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
   transition: background 0.2s;
 }
 
-.submit-btn:hover {
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.primary {
+  background: #2563eb;
+  color: #fff;
+}
+
+.primary:hover {
   background: #1d4ed8;
+}
+
+.secondary {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.secondary:hover {
+  background: #e5e7eb;
 }
 </style>
