@@ -49,7 +49,12 @@
           </div>
           <div class="lf-bottom">
             <span class="contact-info">📞 {{ item.contact }}</span>
-            <button class="contact-btn">联系对方</button>
+            <div class="lf-actions">
+              <button class="favorite-btn" @click="favoriteStore.toggleFavorite({ id: item.id, type: 'lostFound', title: item.title, description: item.description, location: item.location })">
+                {{ favoriteStore.isFavorite('lostFound', item.id) ? '❤️ 已收藏' : '🤍 收藏' }}
+              </button>
+              <button class="contact-btn">联系对方</button>
+            </div>
           </div>
         </div>
       </article>
@@ -61,10 +66,12 @@
 import { computed, onMounted, ref } from 'vue'
 import EmptyState from '../components/EmptyState.vue'
 import { getLostFounds, type LostFoundItem } from '../api/lostFound'
+import { useFavoriteStore } from '../stores/favorite'
 
 const items = ref<LostFoundItem[]>([])
 const loading = ref(true)
 const activeFilter = ref<'all' | 'lost' | 'found'>('all')
+const favoriteStore = useFavoriteStore()
 
 const filteredItems = computed(() => {
   if (activeFilter.value === 'all') return items.value
@@ -138,6 +145,12 @@ onMounted(async () => {
 
 .lf-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid #f3f4f6; }
 .contact-info { font-size: 13px; color: #6b7280; }
+.lf-actions { display: flex; align-items: center; gap: 10px; }
+.favorite-btn {
+  padding: 8px 16px; border: 1px solid #e5e7eb; border-radius: 8px;
+  background: #fff; font-size: 13px; font-family: inherit; cursor: pointer; transition: all 0.2s;
+}
+.favorite-btn:hover { border-color: #f59e0b; background: #fffbeb; }
 .contact-btn {
   padding: 8px 22px; border: 1px solid #2563eb; border-radius: 8px;
   background: #fff; color: #2563eb; font-size: 13px; font-weight: 600;

@@ -44,7 +44,12 @@
               <span>⏰ 截止：{{ item.deadline }}</span>
               <span>👤 {{ item.publisher }}</span>
             </div>
-            <button class="take-btn">接单</button>
+            <div class="errand-actions">
+              <button class="favorite-btn" @click="favoriteStore.toggleFavorite({ id: item.id, type: 'errand', title: item.title, description: item.description, location: item.from + ' → ' + item.to })">
+                {{ favoriteStore.isFavorite('errand', item.id) ? '❤️ 已收藏' : '🤍 收藏' }}
+              </button>
+              <button class="take-btn">接单</button>
+            </div>
           </div>
         </div>
       </article>
@@ -56,10 +61,12 @@
 import { computed, onMounted, ref } from 'vue'
 import EmptyState from '../components/EmptyState.vue'
 import { getErrands, type ErrandItem } from '../api/errand'
+import { useFavoriteStore } from '../stores/favorite'
 
 const items = ref<ErrandItem[]>([])
 const loading = ref(true)
 const activeFilter = ref('全部')
+const favoriteStore = useFavoriteStore()
 
 const filteredItems = computed(() => {
   if (activeFilter.value === '全部') return items.value
@@ -151,6 +158,12 @@ onMounted(async () => {
 
 .errand-bottom { display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid #f3f4f6; }
 .errand-meta { display: flex; gap: 18px; font-size: 12px; color: #9ca3af; }
+.errand-actions { display: flex; align-items: center; gap: 10px; }
+.favorite-btn {
+  padding: 8px 16px; border: 1px solid #e5e7eb; border-radius: 8px;
+  background: #fff; font-size: 13px; font-family: inherit; cursor: pointer; transition: all 0.2s;
+}
+.favorite-btn:hover { border-color: #f59e0b; background: #fffbeb; }
 .take-btn {
   padding: 10px 28px; border: none; border-radius: 10px;
   background: #8b5cf6; color: #fff; font-size: 14px; font-weight: 600;

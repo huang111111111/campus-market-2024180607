@@ -48,7 +48,12 @@
                 <div class="progress-fill" :style="{ width: (item.currentCount / item.targetCount * 100) + '%' }" />
               </div>
             </div>
-            <button class="join-btn">我要加入</button>
+            <div class="gb-actions">
+              <button class="favorite-btn" @click="favoriteStore.toggleFavorite({ id: item.id, type: 'groupBuy', title: item.title, description: item.description, location: item.location })">
+                {{ favoriteStore.isFavorite('groupBuy', item.id) ? '❤️' : '🤍' }}
+              </button>
+              <button class="join-btn">我要加入</button>
+            </div>
           </div>
         </div>
       </article>
@@ -60,10 +65,12 @@
 import { computed, onMounted, ref } from 'vue'
 import EmptyState from '../components/EmptyState.vue'
 import { getGroupBuys, type GroupBuyItem } from '../api/groupBuy'
+import { useFavoriteStore } from '../stores/favorite'
 
 const items = ref<GroupBuyItem[]>([])
 const loading = ref(true)
 const activeFilter = ref('全部')
+const favoriteStore = useFavoriteStore()
 
 const filteredItems = computed(() => {
   if (activeFilter.value === '全部') return items.value
@@ -136,7 +143,12 @@ onMounted(async () => {
 .progress-count strong { color: #059669; }
 .progress-bar { height: 8px; background: #e5e7eb; border-radius: 999px; overflow: hidden; }
 .progress-fill { height: 100%; background: linear-gradient(90deg, #10b981, #059669); border-radius: 999px; transition: width 0.4s; }
-
+.gb-actions { display: flex; align-items: center; gap: 10px; }
+.favorite-btn {
+  padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 8px;
+  background: #fff; font-size: 16px; font-family: inherit; cursor: pointer; transition: all 0.2s;
+}
+.favorite-btn:hover { border-color: #f59e0b; background: #fffbeb; }
 .join-btn {
   padding: 10px 28px; border: none; border-radius: 10px;
   background: #10b981; color: #fff; font-size: 14px; font-weight: 600;

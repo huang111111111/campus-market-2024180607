@@ -56,7 +56,12 @@
               <span class="price">¥{{ item.price }}</span>
               <span class="condition">{{ item.condition }}</span>
             </div>
-            <button class="contact-btn">联系卖家</button>
+            <div class="card-actions">
+              <button class="favorite-btn" @click="favoriteStore.toggleFavorite({ id: item.id, type: 'trade', title: item.title, description: item.description, location: item.location })">
+                {{ favoriteStore.isFavorite('trade', item.id) ? '❤️ 已收藏' : '🤍 收藏' }}
+              </button>
+              <button class="contact-btn">联系卖家</button>
+            </div>
           </div>
         </div>
       </article>
@@ -68,10 +73,12 @@
 import { computed, onMounted, ref } from 'vue'
 import EmptyState from '../components/EmptyState.vue'
 import { getTrades, type TradeItem } from '../api/trade'
+import { useFavoriteStore } from '../stores/favorite'
 
 const trades = ref<TradeItem[]>([])
 const loading = ref(true)
 const activeCategory = ref('全部')
+const favoriteStore = useFavoriteStore()
 
 const categories = ref(['全部', '数码配件', '教材资料', '宿舍生活', '运动出行', '其他'])
 
@@ -146,6 +153,12 @@ onMounted(async () => {
 .price-block { display: flex; align-items: baseline; gap: 10px; }
 .price { font-size: 22px; font-weight: 700; color: #dc2626; }
 .condition { font-size: 13px; color: #6b7280; }
+.card-actions { display: flex; align-items: center; gap: 10px; }
+.favorite-btn {
+  padding: 8px 16px; border: 1px solid #e5e7eb; border-radius: 8px;
+  background: #fff; font-size: 13px; font-family: inherit; cursor: pointer; transition: all 0.2s;
+}
+.favorite-btn:hover { border-color: #f59e0b; background: #fffbeb; }
 .contact-btn {
   padding: 8px 22px; border: 1px solid #2563eb; border-radius: 8px;
   background: #fff; color: #2563eb; font-size: 13px; font-weight: 600;
