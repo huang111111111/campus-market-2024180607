@@ -9,7 +9,12 @@
       <RouterLink to="/publish" class="hero-publish-btn">+ 发起拼单</RouterLink>
     </div>
 
-    <!-- 类型筛选 -->
+    <!-- 搜索 + 类型筛选 -->
+    <SearchBar
+      v-model="keyword"
+      placeholder="搜索标题、类型、地点或描述"
+    />
+
     <div class="filter-bar">
       <button class="filter-btn" :class="{ active: activeFilter === '全部' }" @click="activeFilter = '全部'">全部</button>
       <button class="filter-btn" :class="{ active: activeFilter === '拼餐' }" @click="activeFilter = '拼餐'">🍲 拼餐</button>
@@ -18,9 +23,25 @@
       <button class="filter-btn" :class="{ active: activeFilter === '出行拼车' }" @click="activeFilter = '出行拼车'">🚗 拼车</button>
     </div>
 
-    <EmptyState v-if="filteredItems.length === 0 && !loading" text="暂无拼单搭子信息" />
+    <!-- 状态展示 -->
+    <LoadingState
+      v-if="loading"
+      text="正在加载拼单搭子信息..."
+    />
 
-    <div v-if="filteredItems.length > 0" class="list">
+    <ErrorState
+      v-else-if="error"
+      message="拼单搭子数据加载失败，请检查 Mock 服务是否正常运行。"
+      show-retry
+      @retry="loadItems"
+    />
+
+    <EmptyState
+      v-else-if="filteredItems.length === 0"
+      :text="keyword ? `未找到与「${keyword}」相关的信息` : '暂无拼单搭子信息'"
+    />
+
+    <div v-else class="list">
       <article v-for="item in filteredItems" :key="item.id" class="gb-card">
         <div class="gb-left">
           <span class="gb-emoji">{{ item.type === '拼餐' ? '🍲' : item.type === '学习资料' ? '📖' : item.type === '运动搭子' ? '⚽' : item.type === '学习搭子' ? '📝' : item.type === '出行拼车' ? '🚗' : '👥' }}</span>
@@ -49,7 +70,7 @@
               </div>
             </div>
             <div class="gb-actions">
-              <button class="favorite-btn" @click="favoriteStore.toggleFavorite({ id: item.id, type: 'groupBuy', title: item.title, description: item.description, location: item.location })">
+              <button class="favorite-btn" :class="{ active: favoriteStore.isFavorite('groupBuy', item.id) }" @click="favoriteStore.toggleFavorite({ id: item.id, type: 'groupBuy', title: item.title, description: item.description, location: item.location })">
                 {{ favoriteStore.isFavorite('groupBuy', item.id) ? '❤️' : '🤍' }}
               </button>
               <button class="join-btn">我要加入</button>
@@ -64,28 +85,50 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import EmptyState from '../components/EmptyState.vue'
+import ErrorState from '../components/ErrorState.vue'
+import LoadingState from '../components/LoadingState.vue'
+import SearchBar from '../components/SearchBar.vue'
 import { getGroupBuys, type GroupBuyItem } from '../api/groupBuy'
 import { useFavoriteStore } from '../stores/favorite'
 
 const items = ref<GroupBuyItem[]>([])
 const loading = ref(true)
+const error = ref(false)
 const activeFilter = ref('全部')
+const keyword = ref('')
 const favoriteStore = useFavoriteStore()
 
 const filteredItems = computed(() => {
-  if (activeFilter.value === '全部') return items.value
-  return items.value.filter(i => i.type === activeFilter.value)
+  let result = items.value
+  if (activeFilter.value !== '全部') {
+    result = result.filter(i => i.type === activeFilter.value)
+  }
+  if (keyword.value.trim()) {
+    const kw = keyword.value.trim()
+    result = result.filter(i =>
+      i.title.includes(kw) || i.type.includes(kw) ||
+      i.location.includes(kw) || i.description.includes(kw)
+    )
+  }
+  return result
 })
 
-onMounted(async () => {
+async function loadItems() {
+  loading.value = true
+  error.value = false
   try {
     const res = await getGroupBuys()
     items.value = res.data
   } catch (err) {
     console.error('获取拼单搭子数据失败:', err)
+    error.value = true
   } finally {
     loading.value = false
   }
+}
+
+onMounted(() => {
+  loadItems()
 })
 </script>
 
@@ -149,6 +192,7 @@ onMounted(async () => {
   background: #fff; font-size: 16px; font-family: inherit; cursor: pointer; transition: all 0.2s;
 }
 .favorite-btn:hover { border-color: #f59e0b; background: #fffbeb; }
+.favorite-btn.active { background: #dbeafe; color: #2563eb; border-color: #93c5fd; }
 .join-btn {
   padding: 10px 28px; border: none; border-radius: 10px;
   background: #10b981; color: #fff; font-size: 14px; font-weight: 600;

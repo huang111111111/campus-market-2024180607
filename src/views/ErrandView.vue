@@ -9,7 +9,12 @@
       <RouterLink to="/publish" class="hero-publish-btn">+ 发布任务</RouterLink>
     </div>
 
-    <!-- 类型筛选 -->
+    <!-- 搜索 + 类型筛选 -->
+    <SearchBar
+      v-model="keyword"
+      placeholder="搜索标题、任务类型、地点或描述"
+    />
+
     <div class="filter-bar">
       <button class="filter-btn" :class="{ active: activeFilter === '全部' }" @click="activeFilter = '全部'">全部</button>
       <button class="filter-btn" :class="{ active: activeFilter === '取快递' }" @click="activeFilter = '取快递'">📦 取快递</button>
@@ -18,9 +23,25 @@
       <button class="filter-btn" :class="{ active: activeFilter === '搬运' }" @click="activeFilter = '搬运'">💪 搬运</button>
     </div>
 
-    <EmptyState v-if="filteredItems.length === 0 && !loading" text="暂无跑腿委托信息" />
+    <!-- 状态展示 -->
+    <LoadingState
+      v-if="loading"
+      text="正在加载跑腿委托信息..."
+    />
 
-    <div v-if="filteredItems.length > 0" class="list">
+    <ErrorState
+      v-else-if="error"
+      message="跑腿委托数据加载失败，请检查 Mock 服务是否正常运行。"
+      show-retry
+      @retry="loadItems"
+    />
+
+    <EmptyState
+      v-else-if="filteredItems.length === 0"
+      :text="keyword ? `未找到与「${keyword}」相关的信息` : '暂无跑腿委托信息'"
+    />
+
+    <div v-else class="list">
       <article v-for="item in filteredItems" :key="item.id" class="errand-card">
         <div class="errand-badge" :class="getUrgencyClass(item.reward)">
           <span class="reward-amount">¥{{ item.reward }}</span>
@@ -45,7 +66,7 @@
               <span>👤 {{ item.publisher }}</span>
             </div>
             <div class="errand-actions">
-              <button class="favorite-btn" @click="favoriteStore.toggleFavorite({ id: item.id, type: 'errand', title: item.title, description: item.description, location: item.from + ' → ' + item.to })">
+              <button class="favorite-btn" :class="{ active: favoriteStore.isFavorite('errand', item.id) }" @click="favoriteStore.toggleFavorite({ id: item.id, type: 'errand', title: item.title, description: item.description, location: item.from + ' → ' + item.to })">
                 {{ favoriteStore.isFavorite('errand', item.id) ? '❤️ 已收藏' : '🤍 收藏' }}
               </button>
               <button class="take-btn">接单</button>
@@ -60,17 +81,32 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import EmptyState from '../components/EmptyState.vue'
+import ErrorState from '../components/ErrorState.vue'
+import LoadingState from '../components/LoadingState.vue'
+import SearchBar from '../components/SearchBar.vue'
 import { getErrands, type ErrandItem } from '../api/errand'
 import { useFavoriteStore } from '../stores/favorite'
 
 const items = ref<ErrandItem[]>([])
 const loading = ref(true)
+const error = ref(false)
 const activeFilter = ref('全部')
+const keyword = ref('')
 const favoriteStore = useFavoriteStore()
 
 const filteredItems = computed(() => {
-  if (activeFilter.value === '全部') return items.value
-  return items.value.filter(i => i.taskType === activeFilter.value)
+  let result = items.value
+  if (activeFilter.value !== '全部') {
+    result = result.filter(i => i.taskType === activeFilter.value)
+  }
+  if (keyword.value.trim()) {
+    const kw = keyword.value.trim()
+    result = result.filter(i =>
+      i.title.includes(kw) || i.taskType.includes(kw) ||
+      i.from.includes(kw) || i.to.includes(kw) || i.description.includes(kw)
+    )
+  }
+  return result
 })
 
 function getUrgencyClass(reward: number) {
@@ -79,15 +115,22 @@ function getUrgencyClass(reward: number) {
   return 'easy'
 }
 
-onMounted(async () => {
+async function loadItems() {
+  loading.value = true
+  error.value = false
   try {
     const res = await getErrands()
     items.value = res.data
   } catch (err) {
     console.error('获取跑腿委托数据失败:', err)
+    error.value = true
   } finally {
     loading.value = false
   }
+}
+
+onMounted(() => {
+  loadItems()
 })
 </script>
 
@@ -164,6 +207,7 @@ onMounted(async () => {
   background: #fff; font-size: 13px; font-family: inherit; cursor: pointer; transition: all 0.2s;
 }
 .favorite-btn:hover { border-color: #f59e0b; background: #fffbeb; }
+.favorite-btn.active { background: #dbeafe; color: #2563eb; border-color: #93c5fd; }
 .take-btn {
   padding: 10px 28px; border: none; border-radius: 10px;
   background: #8b5cf6; color: #fff; font-size: 14px; font-weight: 600;

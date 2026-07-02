@@ -12,7 +12,12 @@
       </div>
     </div>
 
-    <!-- 分类筛选 -->
+    <!-- 搜索 + 筛选 -->
+    <SearchBar
+      v-model="keyword"
+      placeholder="搜索商品标题、分类、地点或描述"
+    />
+
     <div class="filter-bar">
       <button
         v-for="cat in categories"
@@ -25,13 +30,25 @@
       </button>
     </div>
 
-    <!-- 列表 -->
-    <EmptyState
-      v-if="filteredTrades.length === 0 && !loading"
-      text="暂无符合条件的二手交易信息"
+    <!-- 状态展示 -->
+    <LoadingState
+      v-if="loading"
+      text="正在加载二手交易信息..."
     />
 
-    <div v-if="filteredTrades.length > 0" class="list">
+    <ErrorState
+      v-else-if="error"
+      message="二手交易数据加载失败，请检查 Mock 服务是否正常运行。"
+      show-retry
+      @retry="loadTrades"
+    />
+
+    <EmptyState
+      v-else-if="filteredTrades.length === 0"
+      :text="keyword ? `未找到与「${keyword}」相关的商品` : '暂无二手交易信息'"
+    />
+
+    <div v-else class="list">
       <article
         v-for="item in filteredTrades"
         :key="item.id"
@@ -57,7 +74,11 @@
               <span class="condition">{{ item.condition }}</span>
             </div>
             <div class="card-actions">
-              <button class="favorite-btn" @click="favoriteStore.toggleFavorite({ id: item.id, type: 'trade', title: item.title, description: item.description, location: item.location })">
+              <button
+                class="favorite-btn"
+                :class="{ active: favoriteStore.isFavorite('trade', item.id) }"
+                @click="favoriteStore.toggleFavorite({ id: item.id, type: 'trade', title: item.title, description: item.description, location: item.location })"
+              >
                 {{ favoriteStore.isFavorite('trade', item.id) ? '❤️ 已收藏' : '🤍 收藏' }}
               </button>
               <button class="contact-btn">联系卖家</button>
@@ -72,30 +93,52 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import EmptyState from '../components/EmptyState.vue'
+import ErrorState from '../components/ErrorState.vue'
+import LoadingState from '../components/LoadingState.vue'
+import SearchBar from '../components/SearchBar.vue'
 import { getTrades, type TradeItem } from '../api/trade'
 import { useFavoriteStore } from '../stores/favorite'
 
 const trades = ref<TradeItem[]>([])
 const loading = ref(true)
+const error = ref(false)
 const activeCategory = ref('全部')
+const keyword = ref('')
 const favoriteStore = useFavoriteStore()
 
 const categories = ref(['全部', '数码配件', '教材资料', '宿舍生活', '运动出行', '其他'])
 
 const filteredTrades = computed(() => {
-  if (activeCategory.value === '全部') return trades.value
-  return trades.value.filter(t => t.category === activeCategory.value)
+  let result = trades.value
+  if (activeCategory.value !== '全部') {
+    result = result.filter(t => t.category === activeCategory.value)
+  }
+  if (keyword.value.trim()) {
+    const kw = keyword.value.trim()
+    result = result.filter(t =>
+      t.title.includes(kw) || t.category.includes(kw) ||
+      t.location.includes(kw) || t.description.includes(kw)
+    )
+  }
+  return result
 })
 
-onMounted(async () => {
+async function loadTrades() {
+  loading.value = true
+  error.value = false
   try {
     const res = await getTrades()
     trades.value = res.data
   } catch (err) {
     console.error('获取二手交易数据失败:', err)
+    error.value = true
   } finally {
     loading.value = false
   }
+}
+
+onMounted(() => {
+  loadTrades()
 })
 </script>
 
@@ -159,6 +202,7 @@ onMounted(async () => {
   background: #fff; font-size: 13px; font-family: inherit; cursor: pointer; transition: all 0.2s;
 }
 .favorite-btn:hover { border-color: #f59e0b; background: #fffbeb; }
+.favorite-btn.active { background: #dbeafe; color: #2563eb; border-color: #93c5fd; }
 .contact-btn {
   padding: 8px 22px; border: 1px solid #2563eb; border-radius: 8px;
   background: #fff; color: #2563eb; font-size: 13px; font-weight: 600;

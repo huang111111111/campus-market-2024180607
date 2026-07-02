@@ -9,7 +9,12 @@
       <RouterLink to="/publish" class="hero-publish-btn">+ 发布招领</RouterLink>
     </div>
 
-    <!-- 类型筛选 -->
+    <!-- 搜索 + 类型筛选 -->
+    <SearchBar
+      v-model="keyword"
+      placeholder="搜索标题、物品名称、地点或描述"
+    />
+
     <div class="filter-bar">
       <button class="filter-btn" :class="{ active: activeFilter === 'all' }" @click="activeFilter = 'all'">
         全部
@@ -22,9 +27,25 @@
       </button>
     </div>
 
-    <EmptyState v-if="filteredItems.length === 0 && !loading" text="暂无失物招领信息" />
+    <!-- 状态展示 -->
+    <LoadingState
+      v-if="loading"
+      text="正在加载失物招领信息..."
+    />
 
-    <div v-if="filteredItems.length > 0" class="list">
+    <ErrorState
+      v-else-if="error"
+      message="失物招领数据加载失败，请检查 Mock 服务是否正常运行。"
+      show-retry
+      @retry="loadItems"
+    />
+
+    <EmptyState
+      v-else-if="filteredItems.length === 0"
+      :text="keyword ? `未找到与「${keyword}」相关的信息` : '暂无失物招领信息'"
+    />
+
+    <div v-else class="list">
       <article
         v-for="item in filteredItems"
         :key="item.id"
@@ -50,7 +71,7 @@
           <div class="lf-bottom">
             <span class="contact-info">📞 {{ item.contact }}</span>
             <div class="lf-actions">
-              <button class="favorite-btn" @click="favoriteStore.toggleFavorite({ id: item.id, type: 'lostFound', title: item.title, description: item.description, location: item.location })">
+              <button class="favorite-btn" :class="{ active: favoriteStore.isFavorite('lostFound', item.id) }" @click="favoriteStore.toggleFavorite({ id: item.id, type: 'lostFound', title: item.title, description: item.description, location: item.location })">
                 {{ favoriteStore.isFavorite('lostFound', item.id) ? '❤️ 已收藏' : '🤍 收藏' }}
               </button>
               <button class="contact-btn">联系对方</button>
@@ -65,28 +86,50 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import EmptyState from '../components/EmptyState.vue'
+import ErrorState from '../components/ErrorState.vue'
+import LoadingState from '../components/LoadingState.vue'
+import SearchBar from '../components/SearchBar.vue'
 import { getLostFounds, type LostFoundItem } from '../api/lostFound'
 import { useFavoriteStore } from '../stores/favorite'
 
 const items = ref<LostFoundItem[]>([])
 const loading = ref(true)
+const error = ref(false)
 const activeFilter = ref<'all' | 'lost' | 'found'>('all')
+const keyword = ref('')
 const favoriteStore = useFavoriteStore()
 
 const filteredItems = computed(() => {
-  if (activeFilter.value === 'all') return items.value
-  return items.value.filter(i => i.type === activeFilter.value)
+  let result = items.value
+  if (activeFilter.value !== 'all') {
+    result = result.filter(i => i.type === activeFilter.value)
+  }
+  if (keyword.value.trim()) {
+    const kw = keyword.value.trim()
+    result = result.filter(i =>
+      i.title.includes(kw) || i.itemName.includes(kw) ||
+      i.location.includes(kw) || i.description.includes(kw)
+    )
+  }
+  return result
 })
 
-onMounted(async () => {
+async function loadItems() {
+  loading.value = true
+  error.value = false
   try {
     const res = await getLostFounds()
     items.value = res.data
   } catch (err) {
     console.error('获取失物招领数据失败:', err)
+    error.value = true
   } finally {
     loading.value = false
   }
+}
+
+onMounted(() => {
+  loadItems()
 })
 </script>
 
@@ -151,6 +194,7 @@ onMounted(async () => {
   background: #fff; font-size: 13px; font-family: inherit; cursor: pointer; transition: all 0.2s;
 }
 .favorite-btn:hover { border-color: #f59e0b; background: #fffbeb; }
+.favorite-btn.active { background: #dbeafe; color: #2563eb; border-color: #93c5fd; }
 .contact-btn {
   padding: 8px 22px; border: 1px solid #2563eb; border-radius: 8px;
   background: #fff; color: #2563eb; font-size: 13px; font-weight: 600;

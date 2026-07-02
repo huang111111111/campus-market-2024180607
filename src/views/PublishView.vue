@@ -363,7 +363,7 @@ async function handleSubmit() {
     }
   } catch (error) {
     console.error('发布失败:', error)
-    window.alert('发布失败，请检查 Mock 服务是否正常运行')
+    window.alert('发布失败，请确认 JSON Server 已启动（npm run mock），并检查表单数据是否完整。')
   } finally {
     submitting.value = false
   }
